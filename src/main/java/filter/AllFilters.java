@@ -1,4 +1,4 @@
-package Filters;
+package filter;
 import java.util.ArrayList;
 
 public class AllFilters implements Filter {
