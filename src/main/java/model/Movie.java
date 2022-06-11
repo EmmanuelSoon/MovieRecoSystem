@@ -10,10 +10,12 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.ToString;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 @Data
-@NoArgsConstructor
 @Entity
 @ToString
 public class Movie {
@@ -27,12 +29,12 @@ public class Movie {
     private int minutes;
     private String poster;
     @OneToMany(mappedBy = "movie")
-    private List<Rating> ratings;
+    private Set<Rating> ratings;
 
-    //contructor 
-    public Movie(int id, String title,
-    int year, String genres, String director, 
-    String country, int minutes, String poster) {
+    //contructor
+
+
+    public Movie(int id, String title, int year, String genres, String director, String country, int minutes, String poster, Set<Rating> ratings) {
         this.id = id;
         this.title = title;
         this.year = year;
@@ -41,9 +43,10 @@ public class Movie {
         this.country = country;
         this.minutes = minutes;
         this.poster = poster;
+        this.ratings = ratings;
     }
 
-    public Movie(String title, int year, String genres, String director, String country, int minutes, String poster) {
+    public Movie(String title, int year, String genres, String director, String country, int minutes, String poster, Set<Rating> ratings) {
         this.title = title;
         this.year = year;
         this.genres = genres;
@@ -51,5 +54,23 @@ public class Movie {
         this.country = country;
         this.minutes = minutes;
         this.poster = poster;
+        this.ratings = ratings;
+    }
+
+    public Movie(){
+        this.ratings = new HashSet<Rating>();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Movie)) return false;
+        Movie movie = (Movie) o;
+        return getId() == movie.getId() && getYear() == movie.getYear() && getMinutes() == movie.getMinutes() && Objects.equals(getTitle(), movie.getTitle()) && Objects.equals(getGenres(), movie.getGenres()) && Objects.equals(getDirector(), movie.getDirector()) && Objects.equals(getCountry(), movie.getCountry()) && Objects.equals(getPoster(), movie.getPoster()) && Objects.equals(getRatings(), movie.getRatings());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getTitle(), getYear(), getGenres(), getDirector(), getCountry(), getMinutes(), getPoster(), getRatings());
     }
 }
