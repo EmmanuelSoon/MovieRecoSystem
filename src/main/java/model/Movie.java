@@ -2,15 +2,23 @@ package model;
 
 
 import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.ToString;
+
+import java.util.List;
 
 @Data
 @NoArgsConstructor
 @Entity
+@ToString
 public class Movie {
-    private String id;
+    @Id
+    private int id;
     private String title;
     private int year;
     private String genres;
@@ -18,9 +26,11 @@ public class Movie {
     private String country;
     private int minutes;
     private String poster;
+    @OneToMany(mappedBy = "movie")
+    private List<Rating> ratings;
 
     //contructor 
-    public Movie(String id, String title, 
+    public Movie(int id, String title,
     int year, String genres, String director, 
     String country, int minutes, String poster) {
         this.id = id;
@@ -33,16 +43,13 @@ public class Movie {
         this.poster = poster;
     }
 
-
-    @Override
-    public String toString(){
-        return "ID: " + this.id + ", Title: " + this.title + 
-        ", Year: " + this.year +
-        ", Country: " + this.country +
-        ", Genres: " + this.genres +
-        ", Directed by: " + this.director +
-        ", Duration: " + this.minutes +
-        ", Posted at: " + this.poster;
+    public Movie(String title, int year, String genres, String director, String country, int minutes, String poster) {
+        this.title = title;
+        this.year = year;
+        this.genres = genres;
+        this.director = director;
+        this.country = country;
+        this.minutes = minutes;
+        this.poster = poster;
     }
-
 }
