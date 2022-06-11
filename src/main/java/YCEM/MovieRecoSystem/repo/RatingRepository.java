@@ -1,6 +1,6 @@
-package repo;
+package YCEM.MovieRecoSystem.repo;
 
-import model.Rating;
+import YCEM.MovieRecoSystem.model.Rating;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

@@ -1,10 +1,9 @@
-package model;
+package YCEM.MovieRecoSystem.model;
 
-import filter.Filter;
+import YCEM.MovieRecoSystem.filter.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import repo.MovieRepository;
-import repo.RaterRepository;
-import repo.RatingRepository;
+import YCEM.MovieRecoSystem.repo.*;
+
 
 import java.util.ArrayList;
 import java.util.List;

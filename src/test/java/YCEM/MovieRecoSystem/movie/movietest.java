@@ -10,8 +10,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.core.annotation.Order;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import model.Movie;
-import repo.MovieRepository;
+import YCEM.MovieRecoSystem.model.*;
+import YCEM.MovieRecoSystem.repo.*;;
 
 
 @ExtendWith(SpringExtension.class)

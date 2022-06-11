@@ -1,5 +1,5 @@
-package filter;
-import model.Movie;
+package YCEM.MovieRecoSystem.filter;
+import YCEM.MovieRecoSystem.model.Movie;
 
 import java.util.ArrayList;
 

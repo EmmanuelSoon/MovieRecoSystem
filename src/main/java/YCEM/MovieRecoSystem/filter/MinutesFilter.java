@@ -1,7 +1,7 @@
-package filter;
+package YCEM.MovieRecoSystem.filter;
 
 
-import model.Movie;
+import YCEM.MovieRecoSystem.model.Movie;
 
 public class MinutesFilter implements Filter {
     private int min_mins;

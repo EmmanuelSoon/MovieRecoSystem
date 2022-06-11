@@ -1,4 +1,4 @@
-package controller;
+package YCEM.MovieRecoSystem.controller;
 
 import java.util.*;
 
@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import repo.*;
-
+import YCEM.MovieRecoSystem.repo.MovieRepository;
+import YCEM.MovieRecoSystem.repo.RaterRepository;
 
 
 @Controller
@@ -19,7 +19,6 @@ public class RecoController {
     
     @Autowired
     RaterRepository Rrepo;
-
 
     @Autowired
     MovieRepository Mrepo;

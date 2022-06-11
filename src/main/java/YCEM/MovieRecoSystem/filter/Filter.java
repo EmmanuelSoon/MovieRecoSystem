@@ -1,6 +1,6 @@
-package filter;
+package YCEM.MovieRecoSystem.filter;
 
-import model.Movie;
+import YCEM.MovieRecoSystem.model.Movie;
 
 public interface Filter {
 	public boolean satisfies(Movie movie);
