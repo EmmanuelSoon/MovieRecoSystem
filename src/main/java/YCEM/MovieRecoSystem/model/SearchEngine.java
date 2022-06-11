@@ -69,25 +69,23 @@ public class SearchEngine {
         double dotProduct = 0;
         for (Rating myRating : me.getRatings())
         {
-            for (Rating otherRating :r.getRatings())
-            {
-                if (myRating.getMovie().getId() == otherRating.getMovie().getId()){
-                    dotProduct += (myRating.getMovie().getId()-5)*(otherRating.getMovie().getId()-5);
-                }
+            double otherRatingVal = r.getRating(myRating.getMovie().getId());
+            if (otherRatingVal != -1.0) {
+                dotProduct += (myRating.getValue()-5)*(otherRatingVal-5);
             }
         }
         return dotProduct;
     }
 
-    private ArrayList<SimilarRater> getSimilarities(String id){
+    private ArrayList<SimilarRater> getSimilarities(int raterId){
         ArrayList<SimilarRater> res = new ArrayList<>();
-        Rater me = raterRepo.findById(Integer.parseInt(id)).get();
+        Rater me = raterRepo.findById(raterId).get();
         if (me != null)
         {
             List<Rater> raters = raterRepo.findAll();
             for (Rater other : raters)
             {
-                if (other.getId() != Integer.parseInt(id))
+                if (other.getId() != raterId)
                 {
                     //if current rater is not myself
                     double dotProductValue = dotProduct(me, other);
@@ -102,17 +100,16 @@ public class SearchEngine {
         return res;
     }
 
-    public ArrayList<RankedMovie> getSimilarRatings(String raterID, int numSimilarRaters, int minimalRaters){
+    public ArrayList<RankedMovie> getSimilarRatings(int raterID, int numSimilarRaters, int minimalRaters){
         return getSimilarRatingsByFilter(raterID, numSimilarRaters, minimalRaters, new TrueFilter());
     }
-    public ArrayList<RankedMovie> getSimilarRatingsByFilter(String raterID, int numSimilarRaters, int minimalRaters, Filter filterCriteria){
+    public ArrayList<RankedMovie> getSimilarRatingsByFilter(int raterID, int numSimilarRaters, int minimalRaters, Filter filterCriteria){
 
-        ArrayList<SimilarRater> similarRaters = getSimilarities(raterID);
-        ArrayList<SimilarRater> topSimilarRaters = getTopSimilarRaters(similarRaters, numSimilarRaters);
+        ArrayList<SimilarRater> topSimilarRaters = getTopSimilarRaters(getSimilarities(raterID), numSimilarRaters);
 
-        List<Movie> movies =
-                movieRepository.findAll().stream().filter(a -> filterCriteria.satisfies(a)).collect(Collectors.toList());
+        List<Movie> movies =applyFilter(movieRepository.findAll(), filterCriteria);
 
+        //MovieList with weighted value to be returned
         ArrayList<RankedMovie> moviesWithAvgWeight = new ArrayList<>();
 
         for (Movie movie : movies)
@@ -127,14 +124,19 @@ public class SearchEngine {
         Collections.sort(moviesWithAvgWeight, (a, b) -> Double.compare(b.getValue(), a.getValue()));
         return moviesWithAvgWeight;
     }
-
-
-
+    private List<Movie> applyFilter(List<Movie> movieList, Filter filterCriteria) {
+        List<Movie> res = new ArrayList<>();
+        for (Movie movie : movieList) {
+            if (filterCriteria.satisfies(movie)) {
+                res.add(movie);
+            }
+        }
+        return res;
+    }
     private ArrayList<SimilarRater> getTopSimilarRaters(ArrayList<SimilarRater> similarRaters, int numSimilarRaters)
     {
         Collections.sort(similarRaters, (a, b) -> Double.compare(b.getDotProductValue(), a.getDotProductValue()));
         ArrayList<SimilarRater> topSimilarRaters = new ArrayList<SimilarRater>();
-
         int size = Math.min(numSimilarRaters, similarRaters.size());
         for (int i = 0; i < size; i++)
         {
@@ -143,13 +145,13 @@ public class SearchEngine {
         return topSimilarRaters;
     }
 
-    private double getWeightAvgRatingsBySimilarRaters(int id, int minimalRaters, ArrayList<SimilarRater> topSimilarRaters){
+    private double getWeightAvgRatingsBySimilarRaters(int movieId, int minimalRaters, ArrayList<SimilarRater> topSimilarRaters){
         int numRaters = 0;
         double sumRatings = 0.0;
         for (SimilarRater raterWithWeight : topSimilarRaters)
         {
             Rater rater = raterRepo.findById(raterWithWeight.getId()).get();
-            double rating = rater.getRating(id);
+            double rating = rater.getRating(movieId);
             if ( rating != -1)
             {
                 numRaters++;
