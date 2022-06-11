@@ -19,7 +19,7 @@ public class Rater {
 
     @Id
     private int id;
-    @OneToMany(mappedBy="raterId")
+    @OneToMany(mappedBy="id")
     private List<Rating> ratings;
 
     public Rater(int id, List<Rating> ratings) {
@@ -46,5 +46,13 @@ public class Rater {
     @Override
     public int hashCode() {
         return Objects.hash(getId(), getRatings());
+    }
+
+    public double getRating(int id){
+        for (Rating r : getRatings()){
+            if (r.getMovie().getId() == id)
+                return r.getValue();
+        }
+        return -1.0;
     }
 }
