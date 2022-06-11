@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+    <body>
+        <h1>Our Recommendations!</h1>
+
+        <a th:href="@{/recommend/add}">Rate more movies to let us know you better!</a>
+
+
+        <table th:if="${not #lists.isEmpty(movies)}">
+            <tr>
+                    <th>Movie Name</th>
+                    <th>Facility Description</th>
+            </tr>
+            <tr th:each="movie:${movies}">
+                <td>
+                    <span th:text=${movie.name}></span>
+                </td>
+
+
+            </tr>
+
+        </table>
+
+    </body>
+
+</html>
