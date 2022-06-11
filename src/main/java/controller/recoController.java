@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import repo.*;
+
 
 
 @Controller
@@ -16,7 +18,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class RecoController {
     
     @Autowired
-    RecomRepository Rrepo;
+    RaterRepository Rrepo;
+
+
+    @Autowired
+    MovieRepository Mrepo;
 
     @RequestMapping("/list")
     public String list(Model model){
