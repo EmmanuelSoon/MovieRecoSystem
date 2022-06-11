@@ -1,6 +1,8 @@
 package filter;
 
 
+import model.Movie;
+
 public class GenreFilter implements Filter {
     private String myGenre;
 	
@@ -9,8 +11,8 @@ public class GenreFilter implements Filter {
 	}
 	
 	@Override
-	public boolean satisfies(String id) {
-		return MovieDatabase.getGenres(id).toLowerCase().contains(myGenre.toLowerCase());
+	public boolean satisfies(Movie movie) {
+		return movie.getGenres().toLowerCase().contains(myGenre.toLowerCase());
 	}
 
 

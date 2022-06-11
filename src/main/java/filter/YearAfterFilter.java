@@ -1,5 +1,7 @@
 package filter;
 
+import model.Movie;
+
 public class YearAfterFilter implements Filter {
 	private int myYear;
 	
@@ -8,8 +10,8 @@ public class YearAfterFilter implements Filter {
 	}
 	
 	@Override
-	public boolean satisfies(String id) {
-		return MovieDatabase.getYear(id) >= myYear;
+	public boolean satisfies(Movie movie) {
+		return movie.getYear() >= myYear;
 	}
 
 }

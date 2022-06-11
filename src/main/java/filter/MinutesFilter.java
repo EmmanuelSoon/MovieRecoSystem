@@ -1,6 +1,8 @@
 package filter;
 
 
+import model.Movie;
+
 public class MinutesFilter implements Filter {
     private int min_mins;
     private int max_mins;
@@ -11,8 +13,8 @@ public class MinutesFilter implements Filter {
 	}
 
     @Override
-	public boolean satisfies(String id) {
-		return MovieDatabase.getMinutes(id) >= min_mins && MovieDatabase.getMinutes(id) <= max_mins;
+	public boolean satisfies(Movie movie) {
+		return movie.getMinutes() >= min_mins && movie.getMinutes() <= max_mins;
 	}
 
 
