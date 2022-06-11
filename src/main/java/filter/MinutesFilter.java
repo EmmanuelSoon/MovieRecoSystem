@@ -1,6 +1,5 @@
-package Filters;
+package filter;
 
-import models.MovieDatabase;
 
 public class MinutesFilter implements Filter {
     private int min_mins;

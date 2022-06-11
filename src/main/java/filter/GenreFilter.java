@@ -1,6 +1,5 @@
-package Filters;
+package filter;
 
-import models.MovieDatabase;
 
 public class GenreFilter implements Filter {
     private String myGenre;

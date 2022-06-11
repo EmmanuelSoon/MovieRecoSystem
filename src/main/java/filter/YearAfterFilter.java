@@ -1,5 +1,4 @@
-package Filters;
-import models.*;
+package filter;
 
 public class YearAfterFilter implements Filter {
 	private int myYear;

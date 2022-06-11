@@ -1,4 +1,4 @@
-package Filters;
+package filter;
 
 public class TrueFilter implements Filter {
 	@Override

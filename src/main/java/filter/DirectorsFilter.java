@@ -1,5 +1,4 @@
-package Filters;
-import models.MovieDatabase;
+package filter;
 
 
 public class DirectorsFilter implements Filter{
