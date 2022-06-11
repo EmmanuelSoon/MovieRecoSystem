@@ -1,4 +1,6 @@
 package filter;
+import model.Movie;
+
 import java.util.ArrayList;
 
 public class AllFilters implements Filter {
@@ -13,13 +15,12 @@ public class AllFilters implements Filter {
     }
 
     @Override
-    public boolean satisfies(String id) {
+    public boolean satisfies(Movie movie) {
         for(Filter f : filters) {
-            if (! f.satisfies(id)) {
+            if (! f.satisfies(movie)) {
                 return false;
             }
         }
-        
         return true;
     }
 

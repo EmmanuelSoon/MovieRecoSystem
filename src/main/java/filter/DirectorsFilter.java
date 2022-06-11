@@ -1,6 +1,8 @@
 package filter;
 
 
+import model.Movie;
+
 public class DirectorsFilter implements Filter{
     private String[] myDirectors;
 	
@@ -9,15 +11,14 @@ public class DirectorsFilter implements Filter{
 	}
 	
 	@Override
-	public boolean satisfies(String id) {
-		boolean check = false;
-        String movieDirectors = MovieDatabase.getDirector(id);
-        for (String curr_director : myDirectors){
-                if (movieDirectors.contains(curr_director.trim()))
-                {
-                    return true;
-                }
+	public boolean satisfies(Movie movie) {
+        String directors = movie.getDirector();
+        for (String director : myDirectors){
+            if (directors.contains(director.trim()))
+            {
+                return true;
+            }
         }
-        return check;
+        return false;
 	}
 }

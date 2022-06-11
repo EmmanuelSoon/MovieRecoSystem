@@ -1,8 +1,10 @@
 package filter;
 
+import model.Movie;
+
 public class TrueFilter implements Filter {
 	@Override
-	public boolean satisfies(String id) {
+	public boolean satisfies(Movie movie) {
 		return true;
 	}
 
