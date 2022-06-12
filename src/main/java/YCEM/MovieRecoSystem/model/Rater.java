@@ -47,9 +47,9 @@ public class Rater {
         return Objects.hash(getId(), getRatings());
     }
 
-    public double getRating(int id){
+    public double getRating(int movieId){
         for (Rating r : getRatings()){
-            if (r.getMovie().getId() == id)
+            if (r.getMovie().getId() == movieId)
                 return r.getValue();
         }
         return -1.0;
