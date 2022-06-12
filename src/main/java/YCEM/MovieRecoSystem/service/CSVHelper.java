@@ -52,13 +52,41 @@ public class CSVHelper {
       }
     }
 
+    public List<Rater> csvToRater(String path) {
+      try
+      (
+        Reader reader = Files.newBufferedReader(Paths.get(path));
+        CSVReader csvReader = new CSVReaderBuilder(reader).withSkipLines(1).build();
+      ) {
+        List<Rater> raters = new ArrayList<Rater>();
+        String[] nextRecord;
+        while ((nextRecord = csvReader.readNext()) != null) 
+        {
+          if(rrepo.getById(Integer.parseInt(nextRecord[0])) == null){
+            Rater curr_rater = new Rater(
+              Integer.parseInt(nextRecord[0]),
+              new ArrayList<Rating>()
+            );
+            raters.add(curr_rater);
+          }
+
+        } 
+      return raters;
+
+  } catch (IOException e) {
+    throw new RuntimeException("fail to parse Movie file: " + e.getMessage());
+    }
+  }
+
+
+
     public List<Rating> csvToRatings(String path) {
       try
       (
         Reader reader = Files.newBufferedReader(Paths.get(path));
         CSVReader csvReader = new CSVReaderBuilder(reader).withSkipLines(1).build();
       ) {
-        List<Rating> Ratings = new ArrayList<Rating>();
+        List<Rating> ratings = new ArrayList<Rating>();
         String[] nextRecord;
         while ((nextRecord = csvReader.readNext()) != null) {
           Rating rating = new Rating();
@@ -68,8 +96,10 @@ public class CSVHelper {
           Rater rater = rrepo.getById(Integer.parseInt(nextRecord[1]));
           rating.setRater(rater);
 
+          ratings.add(rating);
+
       }
-    return Ratings;
+    return ratings;
   } catch (IOException e) {
     throw new RuntimeException("fail to parse Movie file: " + e.getMessage());
       }
