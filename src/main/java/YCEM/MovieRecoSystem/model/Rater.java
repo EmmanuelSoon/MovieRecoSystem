@@ -50,7 +50,7 @@ public class Rater {
     public double getRating(int movieId){
         for (Rating r : getRatings()){
             if (r.getMovie().getId() == movieId)
-                return r.getValue();
+                return r.getRatedValue();
         }
         return -1.0;
     }

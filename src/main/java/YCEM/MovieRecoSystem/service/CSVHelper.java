@@ -90,7 +90,7 @@ public class CSVHelper {
         String[] nextRecord;
         while ((nextRecord = csvReader.readNext()) != null) {
           Rating rating = new Rating();
-          rating.setValue(Double.parseDouble(nextRecord[2]));;
+          rating.setRatedValue(Double.parseDouble(nextRecord[2]));;
           Movie movie = mrepo.getReferenceById(Integer.parseInt(nextRecord[0]));
           rating.setMovie(movie);
           Rater rater = rrepo.getReferenceById(Integer.parseInt(nextRecord[1]));

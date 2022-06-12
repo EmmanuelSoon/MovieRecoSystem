@@ -11,7 +11,7 @@ public class YearAfterFilter implements Filter {
 	
 	@Override
 	public boolean satisfies(Movie movie) {
-		return movie.getYear() >= myYear;
+		return movie.getYearPublished() >= myYear;
 	}
 
 }

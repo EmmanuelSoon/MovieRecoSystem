@@ -3,12 +3,9 @@ package YCEM.MovieRecoSystem.model;
 import YCEM.MovieRecoSystem.filter.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import YCEM.MovieRecoSystem.repo.*;
-import org.springframework.data.util.Pair;
 
 
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class SearchEngine {
 
@@ -29,7 +26,7 @@ public class SearchEngine {
             double sumRatings = 0.0;
             for (Rating r : ratings){
                 numRaters++;
-                sumRatings += r.getValue();
+                sumRatings += r.getRatedValue();
             }
             return sumRatings/numRaters;
         }
@@ -71,7 +68,7 @@ public class SearchEngine {
         {
             double otherRatingVal = r.getRating(myRating.getMovie().getId());
             if (otherRatingVal != -1.0) {
-                dotProduct += (myRating.getValue()-5)*(otherRatingVal-5);
+                dotProduct += (myRating.getRatedValue()-5)*(otherRatingVal-5);
             }
         }
         return dotProduct;

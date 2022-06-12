@@ -21,23 +21,23 @@ public class Rating {
     private Movie movie;
     @ManyToOne
     private Rater rater;
-    private double value;
+    private double ratedValue;
 
-    public Rating(Movie movie, Rater rater, double value) {
+    public Rating(Movie movie, Rater rater, double ratedValue) {
         this.movie = movie;
         this.rater = rater;
-        this.value = value;
+        this.ratedValue = ratedValue;
     }
 
-    public Rating(Movie movie, double value) {
+    public Rating(Movie movie, double ratedValue) {
         this.movie = movie;
-        this.value = value;
+        this.ratedValue = ratedValue;
     }
 
     public int compareTo(Rating other){
-        if (this.value - other.getValue() > 0)
+        if (this.ratedValue - other.getRatedValue() > 0)
             return 1;
-        else if (this.value - other.getValue() < 0)
+        else if (this.ratedValue - other.getRatedValue() < 0)
             return -1;
         else
             return 0;
@@ -48,11 +48,11 @@ public class Rating {
         if (this == o) return true;
         if (!(o instanceof Rating)) return false;
         Rating rating = (Rating) o;
-        return getId() == rating.getId() && Double.compare(rating.getValue(), getValue()) == 0 && Objects.equals(getMovie(), rating.getMovie()) && Objects.equals(getRater(), rating.getRater());
+        return getId() == rating.getId() && Double.compare(rating.getRatedValue(), getRatedValue()) == 0 && Objects.equals(getMovie(), rating.getMovie()) && Objects.equals(getRater(), rating.getRater());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getMovie(), getRater(), getValue());
+        return Objects.hash(getId(), getMovie(), getRater(), getRatedValue());
     }
 }
