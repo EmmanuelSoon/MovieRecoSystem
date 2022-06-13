@@ -1,6 +1,8 @@
 package YCEM.MovieRecoSystem.model;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
@@ -16,6 +18,7 @@ import java.util.Objects;
 @Entity
 public class Rating {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     @ManyToOne
     private Movie movie;

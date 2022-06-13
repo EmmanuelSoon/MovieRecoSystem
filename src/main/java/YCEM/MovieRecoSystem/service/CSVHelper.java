@@ -17,10 +17,10 @@ import YCEM.MovieRecoSystem.repo.*;
 public class CSVHelper {
     
   @Autowired
-  private MovieRepository mrepo;
+  MovieRepository mrepo;
 
   @Autowired
-  private RaterRepository rrepo;
+  RaterRepository rrepo;
 
     public List<Movie> csvToMovie(String path) {
         try
@@ -62,11 +62,11 @@ public class CSVHelper {
         String[] nextRecord;
         while ((nextRecord = csvReader.readNext()) != null) 
         {
-          if(rrepo.getReferenceById(Integer.parseInt(nextRecord[0])) == null){
-            Rater curr_rater = new Rater(
-              Integer.parseInt(nextRecord[0]),
-              new ArrayList<Rating>()
-            );
+          Rater curr_rater = new Rater(
+            Integer.parseInt(nextRecord[0]),
+            new ArrayList<Rating>()
+          );
+          if (!raters.contains(curr_rater)){
             raters.add(curr_rater);
           }
 
@@ -74,36 +74,12 @@ public class CSVHelper {
       return raters;
 
   } catch (IOException e) {
-    throw new RuntimeException("fail to parse Movie file: " + e.getMessage());
+    throw new RuntimeException("fail to get Raters " + e.getMessage());
     }
   }
 
 
 
-    public List<Rating> csvToRatings(String path) {
-      try
-      (
-        Reader reader = Files.newBufferedReader(Paths.get(path));
-        CSVReader csvReader = new CSVReaderBuilder(reader).withSkipLines(1).build();
-      ) {
-        List<Rating> ratings = new ArrayList<Rating>();
-        String[] nextRecord;
-        while ((nextRecord = csvReader.readNext()) != null) {
-          Rating rating = new Rating();
-          rating.setRatedValue(Double.parseDouble(nextRecord[2]));;
-          Movie movie = mrepo.getReferenceById(Integer.parseInt(nextRecord[0]));
-          rating.setMovie(movie);
-          Rater rater = rrepo.getReferenceById(Integer.parseInt(nextRecord[1]));
-          rating.setRater(rater);
-
-          ratings.add(rating);
-
-      }
-    return ratings;
-  } catch (IOException e) {
-    throw new RuntimeException("fail to parse Movie file: " + e.getMessage());
-      }
-    }
 
 }
 
