@@ -47,7 +47,7 @@ public class CSVservice {
         raterRepo.saveAll(raters);
 
         List<Rating> ratings = csvToRatings(ratingPath);
-        //ratingRepo.saveAll(ratings);
+        ratingRepo.saveAll(ratings);
     }
 
 

@@ -21,7 +21,7 @@ public class Rating {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
-    @ManyToOne (cascade = CascadeType.ALL)
+    @ManyToOne
     private Movie movie;
     @ManyToOne
     private Rater rater;

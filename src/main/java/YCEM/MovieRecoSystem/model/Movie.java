@@ -4,6 +4,7 @@ package YCEM.MovieRecoSystem.model;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
@@ -28,7 +29,7 @@ public class Movie {
     private String country;
     private int minutes;
     private String poster;
-    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "movie" ,cascade = CascadeType.ALL)
     private Set<Rating> ratings;
 
     //contructor
