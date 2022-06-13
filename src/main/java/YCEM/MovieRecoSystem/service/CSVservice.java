@@ -5,12 +5,17 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import com.opencsv.CSVReader;
+
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import com.opencsv.CSVReaderBuilder;
 
-
+import org.apache.commons.csv.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,8 +37,8 @@ public class CSVservice {
 
 
     public void csvInit(){
-        String moviePath = "./src/main/resources/data/ratedmovies_short.csv";
-        String ratingPath = "./src/main/resources/data/ratings_short.csv";
+        String moviePath = "./src/main/resources/data/ratedmoviesfull.csv";
+        String ratingPath = "./src/main/resources/data/ratings.csv";
 
         List<Movie> movies = csvToMovie(moviePath);
         movieRepo.saveAll(movies);
@@ -42,63 +47,39 @@ public class CSVservice {
         raterRepo.saveAll(raters);
 
         List<Rating> ratings = csvToRatings(ratingPath);
-        ratingRepo.saveAll(ratings);
+        //ratingRepo.saveAll(ratings);
     }
 
 
-    public List<Rating> csvToRatings(String path) {
-        try
-        (
-          Reader reader = Files.newBufferedReader(Paths.get(path));
-          CSVReader csvReader = new CSVReaderBuilder(reader).withSkipLines(1).build();
-        ) {
-          List<Rating> ratings = new ArrayList<Rating>();
-          String[] nextRecord;
-          while ((nextRecord = csvReader.readNext()) != null) {
-            Rating rating = new Rating();
-            rating.setRatedValue(Double.parseDouble(nextRecord[2]));;
-            Movie movie = movieRepo.getReferenceById(Integer.parseInt(nextRecord[1]));
-            rating.setMovie(movie);
-            Rater rater = raterRepo.getReferenceById(Integer.parseInt(nextRecord[0]));
-            rating.setRater(rater);
-  
-            ratings.add(rating);
-  
-        }
-      return ratings;
-    } catch (IOException e) {
-      throw new RuntimeException("fail to get Ratings: " + e.getMessage());
-        }
-    }
 
-    public List<Movie> csvToMovie(String path) {
-      try
-      (
-        Reader reader = Files.newBufferedReader(Paths.get(path));
-        CSVReader csvReader = new CSVReaderBuilder(reader).withSkipLines(1).build();
-      ) {
+
+
+    public List<Movie> csvToMovie(String path)  {
+      String[] HEADERS = {"id","title","year","country","genre","director","minutes","poster"};
+      try(
+        Reader reader = new FileReader(path);
+      ){
+        Iterable<CSVRecord> records = CSVFormat.DEFAULT.withHeader(HEADERS).withFirstRecordAsHeader().parse(reader);
         List<Movie> movies = new ArrayList<Movie>();
-        String[] nextRecord;
-        while ((nextRecord = csvReader.readNext()) != null) 
-        {
+        //int id, String title, int yearPublished, String genres, String director, String country, int minutes, String poster, Set<Rating> ratings
+        for (CSVRecord record : records){
           Movie curr_movie = new Movie(
-            Integer.parseInt(nextRecord[0]),
-            nextRecord[1],
-            Integer.parseInt(nextRecord[2]),
-            nextRecord[3],
-            nextRecord[4],
-            nextRecord[5],
-            Integer.parseInt(nextRecord[6]),
-            nextRecord[7],
+            Integer.parseInt(record.get("id")),
+            record.get("title"),
+            Integer.parseInt(record.get("year")),
+            record.get("genre"),
+            record.get("director"),
+            record.get("country"),
+            Integer.parseInt(record.get("minutes")),
+            record.get("poster"),
             new HashSet<Rating>()
           );
           movies.add(curr_movie);
         } 
       return movies;
-
-  } catch (IOException e) {
-    throw new RuntimeException("fail to parse Movie file: " + e.getMessage());
-    }
+      } catch (IOException e) {
+          throw new RuntimeException("fail to get Raters " + e.getMessage());
+        }
   }
 
 
@@ -127,5 +108,30 @@ public class CSVservice {
     throw new RuntimeException("fail to get Raters " + e.getMessage());
   }
 }
+
+public List<Rating> csvToRatings(String path) {
+  try
+  (
+    Reader reader = Files.newBufferedReader(Paths.get(path));
+    CSVReader csvReader = new CSVReaderBuilder(reader).withSkipLines(1).build();
+  ) {
+    List<Rating> ratings = new ArrayList<Rating>();
+    String[] nextRecord;
+    while ((nextRecord = csvReader.readNext()) != null) {
+      Rating rating = new Rating();
+      rating.setRatedValue(Double.parseDouble(nextRecord[2]));;
+      Movie movie = movieRepo.getReferenceById(Integer.parseInt(nextRecord[1]));
+      rating.setMovie(movie);
+      Rater rater = raterRepo.getReferenceById(Integer.parseInt(nextRecord[0]));
+      rating.setRater(rater);
+
+      ratings.add(rating);
+
+    }
+    return ratings;
+    } catch (IOException e) {
+    throw new RuntimeException("fail to get Ratings: " + e.getMessage());
+      }
+  }
   
 }

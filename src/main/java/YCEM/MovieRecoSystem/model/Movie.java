@@ -1,6 +1,8 @@
 package YCEM.MovieRecoSystem.model;
 
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -21,16 +23,15 @@ public class Movie {
     private String title;
     private int yearPublished;
     private String genres;
+    @Column(length = 500)
     private String director;
     private String country;
     private int minutes;
     private String poster;
-    @OneToMany(mappedBy = "movie")
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
     private Set<Rating> ratings;
 
     //contructor
-
-
     public Movie(int id, String title, int yearPublished, String genres, String director, String country, int minutes, String poster, Set<Rating> ratings) {
         this.id = id;
         this.title = title;
