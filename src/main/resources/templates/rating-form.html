@@ -3,15 +3,41 @@
 
 
     <body>
-        <h1>Ratings!! </h1>
+        <h1>Ratings!!</h1>
         <p>
             Rate these movies so that we know what you prefer!
         </p>
 
         <h2>Rating Form</h2>
-        <form action="#" th:object="${rater}" th:action="@{/recommend/save}" method="post"> 
-
-
+        <form action="#" th:object="${userRatings}" th:action="@{/recommend/submit}" method="post"> 
+            <fieldset>
+                <input type="submit" th:value ="Save"/>
+                <input type="reset" id="resetButton" name="reset" th:value="Reset"/>
+            </fieldset>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Poster</th>
+                        <th>Title</th>
+                        <th>Rating</th>
+                    </tr>
+                </thead>
+                <tr th:each="userRating: ${userRatings}">
+                    <td>
+                        <img src="${userRating.movie.poster}" />
+                    </td>
+                    <td th:text="${userRating.movie.title}"></td>
+                    <td>
+                        <select th:field="${userRating.rating}">
+                            <option th:value="1">1</option>
+                            <option th:value="2">2</option>
+                            <option th:value="3">3</option>
+                            <option th:value="4">4</option>
+                            <option th:value="5">5</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
         </form>
     </body>
     

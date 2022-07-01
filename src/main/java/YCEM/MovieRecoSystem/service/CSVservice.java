@@ -37,11 +37,9 @@ public class CSVservice {
         String moviePath = "./src/main/resources/data/ratedmoviesfull.csv";
         String ratingPath = "./src/main/resources/data/ratings.csv";
 
-        System.out.println("test");
         List<Movie> movies = csvToMovie(moviePath);
         movieRepo.saveAll(movies);
 
-        System.out.println("test1");
         List<Rater> raters = csvToRater(ratingPath);
         raterRepo.saveAll(raters);
 
