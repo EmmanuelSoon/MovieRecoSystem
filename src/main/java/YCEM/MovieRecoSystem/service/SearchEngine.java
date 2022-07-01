@@ -1,12 +1,16 @@
-package YCEM.MovieRecoSystem.model;
+package YCEM.MovieRecoSystem.service;
 
 import YCEM.MovieRecoSystem.filter.*;
+import YCEM.MovieRecoSystem.helper.RankedMovie;
+import YCEM.MovieRecoSystem.helper.SimilarRater;
+import YCEM.MovieRecoSystem.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import YCEM.MovieRecoSystem.repo.*;
+import org.springframework.stereotype.Service;
 
 
 import java.util.*;
-
+@Service
 public class SearchEngine {
 
     @Autowired
@@ -18,6 +22,7 @@ public class SearchEngine {
 
     public SearchEngine() { }
 
+    //get average rating for movie with minimalRaters provided
     public double getAverageByID(int id, int minimalRaters)
     {
         List<Rating> ratings = ratingRepo.findAllByMovieId(id);
@@ -44,7 +49,7 @@ public class SearchEngine {
             double avg = getAverageByID(movie.getId(), minimalRaters);
             if (avg != 0.0)
             {
-                res.add(new Rating(movie, avg));
+                res.add(new Rating(movie.getId(), avg));
             }
         }
         return res;
@@ -54,7 +59,8 @@ public class SearchEngine {
         ArrayList<Rating> res = new ArrayList<>();
         for (Rating rating : getAverageRatings(minimalRaters))
         {
-            if (filterCriteria.satisfies(rating.getMovie()))
+            Optional<Movie> movie = movieRepository.findById(rating.getMovieId());
+            if (movie.isPresent() && filterCriteria.satisfies(movie.get()))
             {
                 res.add(rating);
             }
@@ -62,13 +68,14 @@ public class SearchEngine {
         return res;
     }
 
-    private double dotProduct(Rater me, Rater r){
+    // return the calculated dotProduct based on the common movies that both rater rated to indicate similarity
+    private double dotProduct(Rater me, Rater r) {
         double dotProduct = 0;
         for (Rating myRating : me.getRatings())
         {
-            double otherRatingVal = r.getRating(myRating.getMovie().getId());
-            if (otherRatingVal != -1.0) {
-                dotProduct += (myRating.getRatedValue()-5)*(otherRatingVal-5);
+            double otherRatedVal = r.getRating(myRating.getMovieId());
+            if (otherRatedVal != -1.0) {
+                dotProduct += (myRating.getRatedValue()-5)*(otherRatedVal-5);
             }
         }
         return dotProduct;
@@ -76,8 +83,8 @@ public class SearchEngine {
 
     private ArrayList<SimilarRater> getSimilarities(int raterId){
         ArrayList<SimilarRater> res = new ArrayList<>();
-        Rater me = raterRepo.findById(raterId).get();
-        if (me != null)
+        Optional<Rater> me = raterRepo.findById(raterId);
+        if (me.isPresent())
         {
             List<Rater> raters = raterRepo.findAll();
             for (Rater other : raters)
@@ -85,7 +92,7 @@ public class SearchEngine {
                 if (other.getId() != raterId)
                 {
                     //if current rater is not myself
-                    double dotProductValue = dotProduct(me, other);
+                    double dotProductValue = dotProduct(me.get(), other);
                     if (dotProductValue > 0)
                     {
                         //only add similar positive dotProductValue
@@ -97,11 +104,32 @@ public class SearchEngine {
         return res;
     }
 
-    public ArrayList<RankedMovie> getSimilarRatings(int raterID, int numSimilarRaters, int minimalRaters){
+    public ArrayList<RankedMovie> getSimilarRatings(int raterID, int numSimilarRaters, int minimalRaters) {
         return getSimilarRatingsByFilter(raterID, numSimilarRaters, minimalRaters, new TrueFilter());
     }
-    public ArrayList<RankedMovie> getSimilarRatingsByFilter(int raterID, int numSimilarRaters, int minimalRaters, Filter filterCriteria){
 
+    /*
+    * raterId = current user/rater Id
+    * size = Nos of recommendated movies required
+    * numSimilarRaters = Nos of similarRater needed to build Recommendation
+    * minimalRaters = min Nos of raters required to consider a weighted movie
+    * Filter f
+    * */
+    public ArrayList<Movie> getRecommendedMovie(int raterID, int size, int numSimilarRaters, int minimalRaters, Filter filter) {
+        ArrayList<RankedMovie> moviesList = getSimilarRatingsByFilter(raterID, numSimilarRaters, minimalRaters, filter);
+        ArrayList<Movie> res = new ArrayList<>();
+        for (RankedMovie rankedMovie : moviesList) {
+            res.add(rankedMovie.getMovie());
+            if (res.size() >= size) {
+                break;
+            }
+        }
+        return res;
+    }
+
+    public ArrayList<RankedMovie> getSimilarRatingsByFilter(int raterID, int numSimilarRaters, int minimalRaters, Filter filterCriteria) {
+
+        // getTopSimilarRaters with size of numSimilarRaters
         ArrayList<SimilarRater> topSimilarRaters = getTopSimilarRaters(getSimilarities(raterID), numSimilarRaters);
 
         List<Movie> movies =applyFilter(movieRepository.findAll(), filterCriteria);
@@ -121,6 +149,7 @@ public class SearchEngine {
         Collections.sort(moviesWithAvgWeight, (a, b) -> Double.compare(b.getValue(), a.getValue()));
         return moviesWithAvgWeight;
     }
+
     private List<Movie> applyFilter(List<Movie> movieList, Filter filterCriteria) {
         List<Movie> res = new ArrayList<>();
         for (Movie movie : movieList) {
@@ -130,6 +159,8 @@ public class SearchEngine {
         }
         return res;
     }
+
+    //
     private ArrayList<SimilarRater> getTopSimilarRaters(ArrayList<SimilarRater> similarRaters, int numSimilarRaters)
     {
         Collections.sort(similarRaters, (a, b) -> Double.compare(b.getDotProductValue(), a.getDotProductValue()));
@@ -149,7 +180,7 @@ public class SearchEngine {
         {
             Rater rater = raterRepo.findById(raterWithWeight.getId()).get();
             double rating = rater.getRating(movieId);
-            if ( rating != -1)
+            if ( rating != -1.0)
             {
                 numRaters++;
                 // add product of rater weight and rating into sum
