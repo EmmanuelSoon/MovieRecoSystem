@@ -81,31 +81,27 @@ public class SearchEngine {
         return dotProduct;
     }
 
-    private ArrayList<SimilarRater> getSimilarities(int raterId){
+    private ArrayList<SimilarRater> getSimilarities(Rater me){
         ArrayList<SimilarRater> res = new ArrayList<>();
-        Optional<Rater> me = raterRepo.findById(raterId);
-        if (me.isPresent())
+        if (me != null)
         {
             List<Rater> raters = raterRepo.findAll();
             for (Rater other : raters)
             {
-                if (other.getId() != raterId)
+                //if current rater is not myself
+                double dotProductValue = dotProduct(me, other);
+                if (dotProductValue > 0)
                 {
-                    //if current rater is not myself
-                    double dotProductValue = dotProduct(me.get(), other);
-                    if (dotProductValue > 0)
-                    {
-                        //only add similar positive dotProductValue
-                        res.add(new SimilarRater(other.getId(), dotProductValue));
-                    }
+                    //only add similar positive dotProductValue
+                    res.add(new SimilarRater(other.getId(), dotProductValue));
                 }
             }
         }
         return res;
     }
 
-    public ArrayList<RankedMovie> getSimilarRatings(int raterID, int numSimilarRaters, int minimalRaters) {
-        return getSimilarRatingsByFilter(raterID, numSimilarRaters, minimalRaters, new TrueFilter());
+    public ArrayList<RankedMovie> getSimilarRatings(Rater me, int numSimilarRaters, int minimalRaters) {
+        return getSimilarRatingsByFilter(me, numSimilarRaters, minimalRaters, new TrueFilter());
     }
 
     /*
@@ -115,8 +111,8 @@ public class SearchEngine {
     * minimalRaters = min Nos of raters required to consider a weighted movie
     * Filter f
     * */
-    public ArrayList<Movie> getRecommendedMovie(int raterID, int size, int numSimilarRaters, int minimalRaters, Filter filter) {
-        ArrayList<RankedMovie> moviesList = getSimilarRatingsByFilter(raterID, numSimilarRaters, minimalRaters, filter);
+    public ArrayList<Movie> getRecommendedMovie(Rater me, int size, int numSimilarRaters, int minimalRaters, Filter filter) {
+        ArrayList<RankedMovie> moviesList = getSimilarRatingsByFilter(me, numSimilarRaters, minimalRaters, filter);
         ArrayList<Movie> res = new ArrayList<>();
         for (RankedMovie rankedMovie : moviesList) {
             res.add(rankedMovie.getMovie());
@@ -127,10 +123,10 @@ public class SearchEngine {
         return res;
     }
 
-    public ArrayList<RankedMovie> getSimilarRatingsByFilter(int raterID, int numSimilarRaters, int minimalRaters, Filter filterCriteria) {
+    public ArrayList<RankedMovie> getSimilarRatingsByFilter(Rater me, int numSimilarRaters, int minimalRaters, Filter filterCriteria) {
 
         // getTopSimilarRaters with size of numSimilarRaters
-        ArrayList<SimilarRater> topSimilarRaters = getTopSimilarRaters(getSimilarities(raterID), numSimilarRaters);
+        ArrayList<SimilarRater> topSimilarRaters = getTopSimilarRaters(getSimilarities(me), numSimilarRaters);
 
         List<Movie> movies =applyFilter(movieRepository.findAll(), filterCriteria);
 

@@ -2,13 +2,17 @@ package YCEM.MovieRecoSystem.controller;
 
 import java.util.*;
 
+import YCEM.MovieRecoSystem.filter.TrueFilter;
 import YCEM.MovieRecoSystem.helper.UserForm;
 import YCEM.MovieRecoSystem.helper.UserRating;
 import YCEM.MovieRecoSystem.model.Movie;
+import YCEM.MovieRecoSystem.model.Rater;
+import YCEM.MovieRecoSystem.model.Rating;
 import YCEM.MovieRecoSystem.service.SearchEngine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -55,8 +59,17 @@ public class RecoController {
     }
 
     @RequestMapping("/submit")
-    public String saveRatings(@ModelAttribute List<UserRating> list ,Model model){
-        return "";
+    public String saveRatings(@ModelAttribute UserForm userForm , BindingResult result, Model model){
+        Rater me = new Rater();
+        for (UserRating userRating : userForm.getUserRatings()) {
+            me.addRating(new Rating(userRating.getMovie().getId(), userRating.getRating()));
+        }
+        List<Movie> recommendedList = searchEngine.getRecommendedMovie(me, 10, 20, 5, new TrueFilter());
+        for (Movie movie : recommendedList ) {
+            movie.addPoster();
+        }
+        model.addAttribute("movies", recommendedList);
+        return "ratinglist";
     }
 
 
