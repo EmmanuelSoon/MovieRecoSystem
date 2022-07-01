@@ -22,7 +22,7 @@ public class Rater {
     @Column(name = "raterid")
     private int id;
     
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Rating> ratings = new ArrayList<Rating>();;
 
     public Rater(int id, List<Rating> ratings) {

@@ -65,7 +65,8 @@ public class RecoController {
         for (UserRating userRating : userForm.getUserRatings()) {
             me.addRating(new Rating(userRating.getMovieid(), userRating.getRating()));
         }
-        List<Movie> recommendedList = searchEngine.getRecommendedMovie(me, 10, 1, 1, new TrueFilter());
+        List<Movie> recommendedList = searchEngine.getRecommendedMovie(me, 10, 10, 2, new TrueFilter());
+        /*List<Rater> list = rRepo.findAll();*/
         for (Movie movie : recommendedList ) {
             movie.addPoster();
         }

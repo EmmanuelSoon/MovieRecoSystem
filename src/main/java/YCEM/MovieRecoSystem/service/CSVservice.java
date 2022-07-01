@@ -46,8 +46,9 @@ public class CSVservice {
         List<Rater> raters = csvToRater(ratingPath);
         raterRepo.saveAll(raters);
 
-        List<Rating> ratings = csvToRatings(ratingPath);
-        ratingRepo.saveAll(ratings);
+        /*List<Rating> ratings = csvToRatings(ratingPath);*/
+        csvToRatings(ratingPath);
+        /*ratingRepo.saveAll(ratings);*/
 
         // addingPosterUrl();
         // System.out.println("Seeding Completed");
@@ -113,11 +114,11 @@ public class CSVservice {
 
 @Transactional
 public List<Rating> csvToRatings(String path) {
-  try
-  (
+        try (
     Reader reader = Files.newBufferedReader(Paths.get(path));
     CSVReader csvReader = new CSVReaderBuilder(reader).withSkipLines(1).build();
-  ) {
+    )
+        {
     List<Rating> ratings = new ArrayList<Rating>();
     String[] nextRecord;
     while ((nextRecord = csvReader.readNext()) != null) {
@@ -125,7 +126,8 @@ public List<Rating> csvToRatings(String path) {
       rating.setRatedValue(Double.parseDouble(nextRecord[2]));;
       rating.setMovieId(Integer.parseInt(nextRecord[1]));
       ratings.add(rating);
-      Rater rater = raterRepo.getReferenceById(Integer.parseInt(nextRecord[0]));
+      Rater rater = raterRepo.findById(Integer.parseInt(nextRecord[0])).get();
+      /*Rater rater = raterRepo.getReferenceById(Integer.parseInt(nextRecord[0]));*/
       rater.addRating(rating);
       raterRepo.save(rater);
     }
