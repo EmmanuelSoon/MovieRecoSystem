@@ -67,7 +67,8 @@ public class Movie {
         for (Result result : response.results){
             String searchedTitle = result.title;
             if (searchedTitle.toLowerCase().equals(getTitle().toLowerCase())){
-                setPoster(result.poster_path);
+                String url = "https://image.tmdb.org/t/p/original";
+                setPoster(url + result.poster_path);
                 return true;
             }
         }

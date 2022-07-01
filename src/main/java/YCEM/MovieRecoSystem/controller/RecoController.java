@@ -48,7 +48,7 @@ public class RecoController {
             userRatings.add(new UserRating(movie));
         }
         model.addAttribute("userRatings", userRatings);
-        return "ratinglist";
+        return "rating-form";
     }
 
     @RequestMapping("/submit")
