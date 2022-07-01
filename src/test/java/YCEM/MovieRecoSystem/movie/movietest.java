@@ -56,7 +56,7 @@ public class movietest {
             .uri(uriBuilder -> uriBuilder
                 .path("/search/movie")
                 .queryParam("api_key", "c39d7f9fe2d8ee821511b5f3d66d45c7")
-                .queryParam("query", "Batman: The Dark Knight Returns, Part 1")
+                .queryParam("query", "To Kill a Mockingbird")
                 .build())
                 .retrieve()
                 .bodyToMono(SearchResult.class).block();

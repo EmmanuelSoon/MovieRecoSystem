@@ -18,7 +18,6 @@ import java.util.Set;
 @Table(name = "movie")
 public class Movie {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "movieid")
     private int id;
     private String title;
