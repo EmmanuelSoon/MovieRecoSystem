@@ -2,6 +2,7 @@ package YCEM.MovieRecoSystem.controller;
 
 import java.util.*;
 
+import YCEM.MovieRecoSystem.helper.UserForm;
 import YCEM.MovieRecoSystem.helper.UserRating;
 import YCEM.MovieRecoSystem.model.Movie;
 import YCEM.MovieRecoSystem.service.SearchEngine;
@@ -47,7 +48,9 @@ public class RecoController {
             movie.addPoster();
             userRatings.add(new UserRating(movie));
         }
-        model.addAttribute("userRatings", userRatings);
+        UserForm userForm = new UserForm();
+        userForm.setUserRatings(userRatings);
+        model.addAttribute("userForm", userForm);
         return "rating-form";
     }
 

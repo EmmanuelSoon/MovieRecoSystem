@@ -9,7 +9,7 @@
         </p>
 
         <h2>Rating Form</h2>
-        <form action="#" th:object="${userRatings}" th:action="@{/recommend/submit}" method="post"> 
+        <form action="#" th:object="${userForm}" th:action="@{/recommend/submit}" method="post"> 
             <fieldset>
                 <input type="submit" th:value ="Save"/>
                 <input type="reset" id="resetButton" name="reset" th:value="Reset"/>
@@ -22,21 +22,21 @@
                         <th>Rating</th>
                     </tr>
                 </thead>
-                <tr th:each="userRating: ${userRatings}">
+                <tr th:each="userRating, itemStat: *{userRatings}">
                     <td>
                         <img th:src="${userRating.movie.poster}" width="300" height="300"/>
                     </td>
                     <td th:text="${userRating.movie.title}"></td>
                     <td>
-                        <!-- <fieldset>
-                            <select th:field="${userRating.rating}">
+                        <fieldset>
+                            <select th:field="*{userRatings[__${itemStat.index}__].rating}">
                                 <option th:value="1">1</option>
                                 <option th:value="2">2</option>
                                 <option th:value="3">3</option>
                                 <option th:value="4">4</option>
                                 <option th:value="5">5</option>
                             </select>
-                        </fieldset> -->
+                        </fieldset>
                     </td>
                 </tr>
             </table>
