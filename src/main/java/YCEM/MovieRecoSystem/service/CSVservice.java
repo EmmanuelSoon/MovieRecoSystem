@@ -2,10 +2,8 @@ package YCEM.MovieRecoSystem.service;
 
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import com.opencsv.CSVReader;
-
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -16,6 +14,7 @@ import com.opencsv.CSVReaderBuilder;
 import org.apache.commons.csv.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import YCEM.MovieRecoSystem.model.*;
 import YCEM.MovieRecoSystem.repo.*;
@@ -38,14 +37,19 @@ public class CSVservice {
         String moviePath = "./src/main/resources/data/ratedmoviesfull.csv";
         String ratingPath = "./src/main/resources/data/ratings.csv";
 
+        System.out.println("test");
         List<Movie> movies = csvToMovie(moviePath);
         movieRepo.saveAll(movies);
 
+        System.out.println("test1");
         List<Rater> raters = csvToRater(ratingPath);
         raterRepo.saveAll(raters);
 
         List<Rating> ratings = csvToRatings(ratingPath);
         ratingRepo.saveAll(ratings);
+
+        // addingPosterUrl();
+        // System.out.println("Seeding Completed");
     }
 
 
@@ -69,8 +73,7 @@ public class CSVservice {
             record.get("director"),
             record.get("country"),
             Integer.parseInt(record.get("minutes")),
-            record.get("poster"),
-            new HashSet<Rating>()
+            "null"
           );
           movies.add(curr_movie);
         } 
@@ -118,11 +121,7 @@ public List<Rating> csvToRatings(String path) {
     while ((nextRecord = csvReader.readNext()) != null) {
       Rating rating = new Rating();
       rating.setRatedValue(Double.parseDouble(nextRecord[2]));;
-      Movie movie = movieRepo.getReferenceById(Integer.parseInt(nextRecord[1]));
-      rating.setMovie(movie);
-      Rater rater = raterRepo.getReferenceById(Integer.parseInt(nextRecord[0]));
-      rating.setRater(rater);
-
+      rating.setMovieId(Integer.parseInt(nextRecord[1]));
       ratings.add(rating);
 
     }
@@ -131,5 +130,29 @@ public List<Rating> csvToRatings(String path) {
     throw new RuntimeException("fail to get Ratings: " + e.getMessage());
       }
   }
-  
+
+
+  public void addingPosterUrl(){
+    List<Movie> movies = movieRepo.findAll();
+    for(Movie movie : movies){
+      WebClient webClient = WebClient.create("https://api.themoviedb.org/3");
+
+      SearchResult response = webClient.get()
+          .uri(uriBuilder -> uriBuilder
+              .path("/search/movie")
+              .queryParam("api_key", "c39d7f9fe2d8ee821511b5f3d66d45c7")
+              .queryParam("query", movie.getTitle())
+              .build())
+              .retrieve()
+              .bodyToMono(SearchResult.class).block();
+
+      for (Result result : response.results){
+        String title = result.title;
+        if (title.equals(movie.getTitle())){
+          movie.setPoster(result.poster_path);
+        }
+      }
+      movieRepo.save(movie);
+    }
+  }
 }
