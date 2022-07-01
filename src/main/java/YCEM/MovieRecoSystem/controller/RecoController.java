@@ -30,7 +30,7 @@ public class RecoController {
     @RequestMapping("/index")
     public String index(){
         // a Welcome Page
-        return "index";
+        return "ratinglist";
     }
 
     @RequestMapping("/list")

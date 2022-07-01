@@ -1,26 +1,62 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js"
+		integrity="sha384-xBuQ/xzmlsLoJpyjoggmTEz8OWUFM0/RC5BsqQBDX2v5cMvDHcMakNTNrHIW2I5f"
+		crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+		integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+		crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+		integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+		crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+		integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    </head>
 
     <body>
-        <h1>Our Recommendations!</h1>
+        <div class="container">
+            <h1 class="my-5">Our Recommendations!</h1>
 
-        <a th:href="@{/recommend/add}">Rate more movies to let us know you better!</a>
+            <a class="btn btn-secondary" th:href="@{/recommend/list}">Rate more movies to let us know you better!</a>
+    
+    
+            <table class="table table-striped my-5 table-hover" th:object="${movies}">
+                <tr>
+                        <th>Poster</th>
+                        <th>Movie Name</th>
+                        <th>Genres</th>
+                        <th>Duration</th>
+                        <th>Directed By</th>
+                        <th>Year Published</th>
+                </tr>
+                <tr th:if="${#lists.isEmpty(movies)}">
+                    <td colspan="6" class="p-4 border">No Movies listed!!! Rate some movies to let us your preferences!</td>
+                </tr>
+                <tr th:each="movie:${movies}">
+                    <td>
+                        <img th:src="${movie.poster}" width="300" height="300"/>
+                    </td>
+                    <td>
+                        <span th:text=${movie.name}></span>
+                    </td>
+                    <td>
+                        <span th:text=${movie.genres}></span>
+                    </td>
+                    <td>
+                        <span th:text=${movie.minutes}></span>
+                    </td>
+                    <td>
+                        <span th:text=${movie.director}></span>
+                    </td>
+                    <td>
+                        <span th:text=${movie.yearPublished}></span>
+                    </td>
+                </tr>
+    
+            </table>
+        </div>
 
-
-        <table th:if="${not #lists.isEmpty(movies)}">
-            <tr>
-                    <th>Movie Name</th>
-                    <th>Facility Description</th>
-            </tr>
-            <tr th:each="movie:${movies}">
-                <td>
-                    <span th:text=${movie.name}></span>
-                </td>
-
-
-            </tr>
-
-        </table>
 
     </body>
 
