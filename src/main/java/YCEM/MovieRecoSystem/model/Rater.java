@@ -21,6 +21,7 @@ public class Rater {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "raterid")
     private int id;
+    
     @OneToMany(fetch = FetchType.EAGER)
     private List<Rating> ratings = new ArrayList<Rating>();;
 

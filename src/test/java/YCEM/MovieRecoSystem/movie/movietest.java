@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.Order;
-
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -24,8 +23,14 @@ import YCEM.MovieRecoSystem.service.CSVservice;
 @DataJpaTest
 public class movietest {
 
+    @Autowired
+    CSVservice csvService;
+
 	@Autowired
 	private MovieRepository Mrepo;
+
+    @Autowired
+	private RaterRepository Rrepo;
 
     @Test
 	@Order(1)
@@ -62,5 +67,12 @@ public class movietest {
                 .bodyToMono(SearchResult.class).block();
 
         System.out.println(response.results[0].poster_path);
+    }
+
+    @Test
+    @Order(4)
+    public void raterRatingListTest(){
+        Rater rater = Rrepo.getReferenceById(1);
+        Assertions.assertTrue(!rater.getRatings().isEmpty());
     }
 }

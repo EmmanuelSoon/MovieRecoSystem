@@ -3,6 +3,9 @@ package YCEM.MovieRecoSystem.service;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.transaction.Transactional;
+
 import com.opencsv.CSVReader;
 
 import java.io.FileReader;
@@ -108,6 +111,7 @@ public class CSVservice {
   }
 }
 
+@Transactional
 public List<Rating> csvToRatings(String path) {
   try
   (
@@ -121,7 +125,9 @@ public List<Rating> csvToRatings(String path) {
       rating.setRatedValue(Double.parseDouble(nextRecord[2]));;
       rating.setMovieId(Integer.parseInt(nextRecord[1]));
       ratings.add(rating);
-
+      Rater rater = raterRepo.getReferenceById(Integer.parseInt(nextRecord[0]));
+      rater.addRating(rating);
+      raterRepo.save(rater);
     }
     return ratings;
     } catch (IOException e) {
