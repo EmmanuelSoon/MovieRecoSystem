@@ -32,9 +32,6 @@
                     </thead>
                     <tr th:each="userRating, itemStat: *{userRatings}">
                         <td>
-                            <input hidden th:value="${userRating.movie.id}"/>
-                        </td>
-                        <td>
                             <img th:src="${userRating.movie.poster}" width="300" height="300"/>
                         </td>
                         <td th:text="${userRating.movie.title}"></td>
@@ -54,6 +51,7 @@
                                 </select>
                             </fieldset>
                         </td>
+                        <td><input type="hidden" th:field="*{userRatings[__${itemStat.index}__].movieid}" /></td>
                     </tr>
                 </table>
                 <fieldset class="mb-5">

@@ -63,9 +63,9 @@ public class RecoController {
     public String saveRatings(@ModelAttribute UserForm userForm , BindingResult result, Model model){
         Rater me = new Rater();
         for (UserRating userRating : userForm.getUserRatings()) {
-            me.addRating(new Rating(userRating.getMovie().getId(), userRating.getRating()));
+            me.addRating(new Rating(userRating.getMovieid(), userRating.getRating()));
         }
-        List<Movie> recommendedList = searchEngine.getRecommendedMovie(me, 10, 20, 5, new TrueFilter());
+        List<Movie> recommendedList = searchEngine.getRecommendedMovie(me, 10, 1, 1, new TrueFilter());
         for (Movie movie : recommendedList ) {
             movie.addPoster();
         }
