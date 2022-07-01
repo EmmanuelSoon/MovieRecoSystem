@@ -1,14 +1,10 @@
 package YCEM.MovieRecoSystem.model;
 
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.util.HashSet;
@@ -18,8 +14,12 @@ import java.util.Set;
 @Data
 @Entity
 @ToString
+@NoArgsConstructor
+@Table(name = "movie")
 public class Movie {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "movieid")
     private int id;
     private String title;
     private int yearPublished;
@@ -29,11 +29,9 @@ public class Movie {
     private String country;
     private int minutes;
     private String poster;
-    @OneToMany(mappedBy = "movie" ,cascade = CascadeType.ALL)
-    private Set<Rating> ratings;
 
     //contructor
-    public Movie(int id, String title, int yearPublished, String genres, String director, String country, int minutes, String poster, Set<Rating> ratings) {
+    public Movie(int id, String title, int yearPublished, String genres, String director, String country, int minutes, String poster) {
         this.id = id;
         this.title = title;
         this.yearPublished = yearPublished;
@@ -42,10 +40,9 @@ public class Movie {
         this.country = country;
         this.minutes = minutes;
         this.poster = poster;
-        this.ratings = ratings;
     }
 
-    public Movie(String title, int yearPublished, String genres, String director, String country, int minutes, String poster, Set<Rating> ratings) {
+    public Movie(String title, int yearPublished, String genres, String director, String country, int minutes, String poster) {
         this.title = title;
         this.yearPublished = yearPublished;
         this.genres = genres;
@@ -53,23 +50,5 @@ public class Movie {
         this.country = country;
         this.minutes = minutes;
         this.poster = poster;
-        this.ratings = ratings;
-    }
-
-    public Movie(){
-        this.ratings = new HashSet<Rating>();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Movie)) return false;
-        Movie movie = (Movie) o;
-        return getId() == movie.getId() && getYearPublished() == movie.getYearPublished() && getMinutes() == movie.getMinutes() && Objects.equals(getTitle(), movie.getTitle()) && Objects.equals(getGenres(), movie.getGenres()) && Objects.equals(getDirector(), movie.getDirector()) && Objects.equals(getCountry(), movie.getCountry()) && Objects.equals(getPoster(), movie.getPoster()) && Objects.equals(getRatings(), movie.getRatings());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getTitle(), getYearPublished(), getGenres(), getDirector(), getCountry(), getMinutes(), getPoster(), getRatings());
     }
 }
