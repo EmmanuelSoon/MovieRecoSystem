@@ -1,11 +1,6 @@
 package YCEM.MovieRecoSystem.model;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,24 +12,19 @@ import java.util.Objects;
 @NoArgsConstructor
 @ToString
 @Entity
+@Table(name = "rating")
 public class Rating {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "ratingid")
     private int id;
-    @ManyToOne
-    private Movie movie;
-    @ManyToOne
-    private Rater rater;
+    @Column(name = "movieid")
+    private int movieId;
     private double ratedValue;
 
-    public Rating(Movie movie, Rater rater, double ratedValue) {
-        this.movie = movie;
-        this.rater = rater;
-        this.ratedValue = ratedValue;
-    }
 
-    public Rating(Movie movie, double ratedValue) {
-        this.movie = movie;
+    public Rating(int movieId, double ratedValue) {
+        this.movieId = movieId;
         this.ratedValue = ratedValue;
     }
 
@@ -45,18 +35,5 @@ public class Rating {
             return -1;
         else
             return 0;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Rating)) return false;
-        Rating rating = (Rating) o;
-        return getId() == rating.getId() && Double.compare(rating.getRatedValue(), getRatedValue()) == 0 && Objects.equals(getMovie(), rating.getMovie()) && Objects.equals(getRater(), rating.getRater());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getMovie(), getRater(), getRatedValue());
     }
 }
