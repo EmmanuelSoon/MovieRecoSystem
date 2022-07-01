@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import YCEM.MovieRecoSystem.repo.MovieRepository;
 import YCEM.MovieRecoSystem.repo.RaterRepository;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 
 @Controller
@@ -58,7 +59,7 @@ public class RecoController {
         return "rating-form";
     }
 
-    @RequestMapping("/submit")
+    @RequestMapping(value = "/submit", method = RequestMethod.POST)
     public String saveRatings(@ModelAttribute UserForm userForm , BindingResult result, Model model){
         Rater me = new Rater();
         for (UserRating userRating : userForm.getUserRatings()) {

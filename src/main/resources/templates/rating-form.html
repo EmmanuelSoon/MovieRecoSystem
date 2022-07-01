@@ -32,6 +32,9 @@
                     </thead>
                     <tr th:each="userRating, itemStat: *{userRatings}">
                         <td>
+                            <input hidden th:value="${userRating.movie.id}"/>
+                        </td>
+                        <td>
                             <img th:src="${userRating.movie.poster}" width="300" height="300"/>
                         </td>
                         <td th:text="${userRating.movie.title}"></td>
@@ -43,6 +46,11 @@
                                     <option th:value="3">3</option>
                                     <option th:value="4">4</option>
                                     <option th:value="5">5</option>
+                                    <option th:value="6">6</option>
+                                    <option th:value="7">7</option>
+                                    <option th:value="8">8</option>
+                                    <option th:value="9">9</option>
+                                    <option th:value="10">10</option>
                                 </select>
                             </fieldset>
                         </td>
